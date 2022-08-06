@@ -1,23 +1,25 @@
 package ru.practicum.shareit.item.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * // TODO .
  */
 @Data
+@Builder
+@AllArgsConstructor
 public class ItemDto {
     private Integer id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String description;
+    @NotNull
     private Boolean available;
-    private int requestId;
-
-    public ItemDto(int id, String name, String description, Boolean available, int requestId) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.available = available;
-        this.requestId = requestId;
-    }
+    private int request;
 }

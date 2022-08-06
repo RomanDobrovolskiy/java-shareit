@@ -1,10 +1,11 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.UserIdNotValidException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserController;
+import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.UserMapper;
 
 import java.util.List;
@@ -17,29 +18,32 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
-    private final UserController userController;
+    private final UserService userService;
 
-    public ItemController(ItemService itemService, UserController userController) {
+    public ItemController(ItemService itemService, UserService userService) {
         this.itemService = itemService;
-        this.userController = userController;
+        this.userService = userService;
     }
 
-    @PostMapping
-    public ItemDto create(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") String userId) {
-        if (!userController.getAll().containsKey(Integer.parseInt(userId))) {
+    private void ItemValidation(ItemDto itemDto, int userId) { // добавили валидационный метод
+        if (!userService.getAll().containsKey((userId))) {
             throw new UserIdNotValidException("Пользователь с id " + userId + " не найден");
         }
 
         if (itemDto.getName() == "" || itemDto.getName() == null ||
                 itemDto.getDescription() == null || itemDto.getDescription() == "") {
-            throw new NullPointerException("Не указано название предмета");
+            throw new NotFoundException("Не указано название предмета");
         }
 
         if (itemDto.getAvailable() == null) {
-            throw new NullPointerException("Укажите доступность предмета");
+            throw new NotFoundException("Укажите доступность предмета");
         }
+    }
 
-        return itemService.create(itemDto, UserMapper.toUser(userController.getUserById(Integer.parseInt(userId))));
+    @PostMapping
+    public ItemDto create(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int userId) {
+        ItemValidation(itemDto, userId);
+        return itemService.create(itemDto, UserMapper.toUser(userService.getUserById((userId))));
     }
 
     @PatchMapping
