@@ -16,7 +16,7 @@ import java.util.*;
 public class ItemServiceImpl implements ItemService {
 
     private int id = 1;
-    final private InMemoryItemRepository itemRepository = new InMemoryItemRepository();
+    private InMemoryItemRepository itemRepository = new InMemoryItemRepository();
 
     @Override
     public ItemDto create(ItemDto itemDto, User user) {
