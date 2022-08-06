@@ -9,7 +9,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserMapper;
 
 import javax.validation.ValidationException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    final private InMemoryUserRepository userRepository = new InMemoryUserRepository();
+    private final InMemoryUserRepository userRepository = new InMemoryUserRepository();
     private int id = 1;
 
     @Override

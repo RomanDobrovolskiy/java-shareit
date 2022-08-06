@@ -25,7 +25,7 @@ public class ItemController {
         this.userService = userService;
     }
 
-    private void ItemValidation(ItemDto itemDto, int userId) { // добавили валидационный метод
+    private void itemValidation(ItemDto itemDto, int userId) { // добавили валидационный метод
         if (!userService.getAll().containsKey((userId))) {
             throw new UserIdNotValidException("Пользователь с id " + userId + " не найден");
         }
@@ -42,7 +42,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto create(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int userId) {
-        ItemValidation(itemDto, userId);
+        itemValidation(itemDto, userId);
         return itemService.create(itemDto, UserMapper.toUser(userService.getUserById((userId))));
     }
 
