@@ -2,16 +2,14 @@ package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.practicum.shareit.exceptions.NotFoundException;
+
 import ru.practicum.shareit.user.dao.InMemoryUserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.model.UserMapper;
 
-import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Service
 public class UserService {
@@ -46,6 +44,7 @@ public class UserService {
     public void deleteUserById(int id) {
         userRepository.deleteUserById(id);
     }
+
     public Map<Integer, User> getAll() {
         return userRepository.getAll();
     }

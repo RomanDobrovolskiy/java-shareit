@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.dao;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exceptions.UserIdNotValidException;
