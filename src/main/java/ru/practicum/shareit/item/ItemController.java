@@ -1,76 +1,72 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.UserIdNotValidException;
+import ru.practicum.shareit.exception.ItemOwnerDidNotSetException;
+
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.model.UserMapper;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.CommentMapper;
+
 
 import java.util.List;
 
 /**
  * // TODO .
  */
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.validation.Valid;
+
+
 @RestController
 @RequestMapping("/items")
+@RequiredArgsConstructor
+@Slf4j
 public class ItemController {
-
     private final ItemService itemService;
-    private final UserService userService;
-
-    public ItemController(ItemService itemService, UserService userService) {
-        this.itemService = itemService;
-        this.userService = userService;
-    }
-
-    private void itemValidation(ItemDto itemDto, int userId) { // добавили валидационный метод
-        if (!userService.getAll().containsKey((userId))) {
-            throw new UserIdNotValidException("Пользователь с id " + userId + " не найден");
-        }
-
-        if (itemDto.getName() == "" || itemDto.getName() == null ||
-                itemDto.getDescription() == null || itemDto.getDescription() == "") {
-            throw new NotFoundException("Не указано название предмета");
-        }
-
-        if (itemDto.getAvailable() == null) {
-            throw new NotFoundException("Укажите доступность предмета");
-        }
-    }
 
     @PostMapping
-    public ItemDto create(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int userId) {
-        itemValidation(itemDto, userId);
-        return itemService.create(itemDto, UserMapper.toUser(userService.getUserById((userId))));
-    }
-
-    @PatchMapping
-    public ItemDto update(@RequestBody Item item, @RequestHeader("X-Sharer-User-Id") int userId) {
-        return itemService.update(item, userId);
-    }
-
-    @PatchMapping("/{itemId}")
-    public ItemDto updateById(@RequestBody Item item,
-                              @RequestHeader("X-Sharer-User-Id") int userId,
-                              @PathVariable int itemId) {
-
-        return itemService.updateById(item, userId, itemId);
+    public ItemDto addItem(@Valid @RequestBody ItemDto itemDto,
+                           @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
+        if (userId == null) {
+            throw new ItemOwnerDidNotSetException("Пользователь в запросе не установлен");
+        }
+        return itemService.addItem(itemDto, userId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getById(@PathVariable int itemId) {
-        return itemService.getById(itemId);
+    public ItemDto getItemById(@PathVariable Long itemId,
+                               @RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") int userId) {
-        return itemService.getAll(userId);
+    public List<ItemDto> getAllUsersItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.getAllUsersItems(userId);
+    }
+
+    @PatchMapping("/{itemId}")
+    public ItemDto editItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                            @PathVariable Long itemId,
+                            @RequestBody ItemDto itemDto) {
+        return itemService.editItem(itemDto, itemId, userId);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam String text) {
-        return itemService.search(text);
+    public List<ItemDto> searchAvailableItems(@RequestParam(defaultValue = "") String text) {
+        return itemService.searchAvailableItems(text);
+    }
+
+    @PostMapping("{itemId}/comment")
+    public CommentDto addComment(@Valid @RequestBody CommentDto commentDto,
+                                 @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
+                                 @PathVariable Long itemId) {
+        if (userId == null) {
+            throw new ItemOwnerDidNotSetException("Владелец не установлен");
+        }
+        Comment comment = CommentMapper.fromDto(commentDto);
+        return CommentMapper.toDto(itemService.addComment(comment, userId, itemId));
     }
 }
