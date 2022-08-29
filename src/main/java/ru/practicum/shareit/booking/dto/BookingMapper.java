@@ -9,15 +9,15 @@ import java.util.stream.Collectors;
 
 public class BookingMapper {
 
-    public static Booking fromInputDto(InputBookingDto inputBookingDto) {
+    public static Booking fromInputDto(BookingRequestDto bookingRequestDto) {
         return Booking.builder()
-                .start(inputBookingDto.getStart())
-                .end(inputBookingDto.getEnd())
+                .start(bookingRequestDto.getStart())
+                .end(bookingRequestDto.getEnd())
                 .build();
     }
 
-    public static OutputBookingDto toOutputDto(Booking booking) {
-        return OutputBookingDto.builder()
+    public static BookingResponseDto toOutputDto(Booking booking) {
+        return BookingResponseDto.builder()
                 .id(booking.getId())
                 .start(booking.getStart())
                 .end(booking.getEnd())
@@ -32,7 +32,7 @@ public class BookingMapper {
                 booking.getStart(), booking.getEnd());
     }
 
-    public static List<OutputBookingDto> toOutputDtoList(List<Booking> bookings) {
+    public static List<BookingResponseDto> toOutputDtoList(List<Booking> bookings) {
         return bookings.stream()
                 .map(BookingMapper::toOutputDto)
                 .collect(Collectors.toList());

@@ -11,11 +11,11 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 public class UserDto {
-    Long id;
+    private Long id;
     @NotBlank (message = "Name can't be empty")
-    String name;
+    private String name;
     @Email (message = "Invalid email format")
     @NotBlank (message = "Email can't be empty")
-    String email;
+    private String email;
 }
 

@@ -48,14 +48,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllUsersItems(Long userId) {
-        List<ItemDto> items = itemRepository.getAllByOwnerId(userId).stream()
+        return itemRepository.getAllByOwnerId(userId).stream()
                 .map(this::setLastAndNextBooking)
                 .map(ItemMapper::toDto)
+                .peek(itemDto -> itemDto.setComments(CommentMapper.toDtoList(commentRepository.findAllByItemId(itemDto.getId()))))
                 .collect(Collectors.toList());
-        for (ItemDto itemDto : items) {
-            itemDto.setComments(CommentMapper.toDtoList(commentRepository.findAllByItemId(itemDto.getId())));
-        }
-        return items;
     }
 
     @Override

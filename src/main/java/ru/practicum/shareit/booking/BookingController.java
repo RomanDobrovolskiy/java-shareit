@@ -3,8 +3,8 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingMapper;
-import ru.practicum.shareit.booking.dto.InputBookingDto;
-import ru.practicum.shareit.booking.dto.OutputBookingDto;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
+import ru.practicum.shareit.booking.dto.BookingResponseDto;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -17,28 +17,28 @@ public class BookingController {
     private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public OutputBookingDto addBooking(@RequestHeader(USER_ID_HEADER) Long userId,
-                                       @Valid @RequestBody InputBookingDto inputBookingDto) {
-        Booking booking = BookingMapper.fromInputDto(inputBookingDto);
-        Long itemId = inputBookingDto.getItemId();
+    public BookingResponseDto addBooking(@RequestHeader(USER_ID_HEADER) Long userId,
+                                         @Valid @RequestBody BookingRequestDto bookingRequestDto) {
+        Booking booking = BookingMapper.fromInputDto(bookingRequestDto);
+        Long itemId = bookingRequestDto.getItemId();
         return BookingMapper.toOutputDto(bookingService.addBooking(booking, userId, itemId));
     }
 
     @PatchMapping("/{bookingId}")
-    public OutputBookingDto approve(@RequestHeader(USER_ID_HEADER) Long userId,
-                                    @PathVariable Long bookingId,
-                                    @RequestParam Boolean approved) {
+    public BookingResponseDto approve(@RequestHeader(USER_ID_HEADER) Long userId,
+                                      @PathVariable Long bookingId,
+                                      @RequestParam Boolean approved) {
         return BookingMapper.toOutputDto(bookingService.approve(userId, bookingId, approved));
     }
 
     @GetMapping("/{bookingId}")
-    public OutputBookingDto getBooking(@RequestHeader(USER_ID_HEADER) Long userId,
-                              @PathVariable Long bookingId) {
+    public BookingResponseDto getBooking(@RequestHeader(USER_ID_HEADER) Long userId,
+                                         @PathVariable Long bookingId) {
         return BookingMapper.toOutputDto(bookingService.getBooking(userId, bookingId));
     }
 
     @GetMapping
-    public List<OutputBookingDto> getAllUsersBookings(
+    public List<BookingResponseDto> getAllUsersBookings(
             @RequestHeader(USER_ID_HEADER) Long userId,
             @RequestParam(defaultValue = "ALL") State state) { // при передаче некорректного параметра state идёт
                                                         // обработка MethodArgumentTypeMismatchException в ErrorHandler
@@ -46,7 +46,7 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public List<OutputBookingDto> getAllUsersItemsBookings(
+    public List<BookingResponseDto> getAllUsersItemsBookings(
             @RequestHeader(USER_ID_HEADER) Long userId,
             @RequestParam(defaultValue = "ALL") State state) { // при передаче некорректного параметра state идёт
                                                         // обработка MethodArgumentTypeMismatchException в ErrorHandler

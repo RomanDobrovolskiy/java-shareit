@@ -14,10 +14,11 @@ import java.util.List;
 @Slf4j
 public class ItemController {
     private final ItemService itemService;
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
     public ItemDto addItem(@Valid @RequestBody ItemDto itemDto,
-                           @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
+                           @RequestHeader(value = USER_ID_HEADER, required = false) Long userId) {
         if (userId == null) {
             throw new ItemOwnerIsNotSetException("User not specified in request");
         }
@@ -26,17 +27,17 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable Long itemId,
-                               @RequestHeader("X-Sharer-User-Id") Long userId) {
+                               @RequestHeader(USER_ID_HEADER) Long userId) {
         return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllUsersItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> getAllUsersItems(@RequestHeader(USER_ID_HEADER) Long userId) {
         return itemService.getAllUsersItems(userId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto editItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemDto editItem(@RequestHeader(USER_ID_HEADER) Long userId,
                             @PathVariable Long itemId,
                             @RequestBody ItemDto itemDto) {
             return itemService.editItem(itemDto, itemId, userId);
@@ -49,7 +50,7 @@ public class ItemController {
 
     @PostMapping("{itemId}/comment")
     public CommentDto addComment(@Valid @RequestBody CommentDto commentDto,
-                                 @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
+                                 @RequestHeader(value = USER_ID_HEADER, required = false) Long userId,
                                  @PathVariable Long itemId) {
         if (userId == null) {
             throw new ItemOwnerIsNotSetException("User not specified in request");
