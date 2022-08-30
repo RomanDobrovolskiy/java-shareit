@@ -2,10 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.IncorrectStateException;
-import ru.practicum.shareit.exceptions.ItemIsBookedException;
-import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.UserIsNotOwnerException;
+import ru.practicum.shareit.exception.*;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
@@ -32,6 +29,10 @@ public class BookingServiceImpl implements BookingService {
         }
         if (item.getOwnerId().equals(userId)) {
             throw new NotFoundException("Owner can't book his item");
+        }
+        if (booking.getStart().isBefore(LocalDateTime.now())
+                || booking.getEnd().isBefore(booking.getStart())) {
+            throw new ValidationException();
         }
         booking.setBooker(user);
         booking.setItem(item);
