@@ -1,51 +1,16 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
+import java.util.Collection;
 
-import ru.practicum.shareit.user.dao.InMemoryUserRepository;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
+public interface UserService {
 
-import java.util.List;
-import java.util.Map;
+    User addUser(User user);
 
+    User getUserById(Long userId);
 
-@Service
-public class UserService {
+    Collection<User> getAllUsers();
 
-    private final InMemoryUserRepository userRepository = new InMemoryUserRepository();
+    User editUser(User user, Long userId);
 
-    public UserDto createUser(@RequestBody UserDto userDto) {
-        return userRepository.createUser(userDto);
-    }
-
-
-    public UserDto getUserById(int userId) {
-        return userRepository.getUserById(userId);
-    }
-
-
-    public List<UserDto> getUsers() {
-        return userRepository.getUsers();
-    }
-
-
-    public UserDto updateUser(UserDto userDto) {
-        return userRepository.updateUser(userDto);
-    }
-
-
-    public UserDto updateById(int id, UserDto userDto) {
-        return userRepository.updateById(id, userDto);
-    }
-
-
-    public void deleteUserById(int id) {
-        userRepository.deleteUserById(id);
-    }
-
-    public Map<Integer, User> getAll() {
-        return userRepository.getAll();
-    }
+    void deleteUser(Long userId);
 }
