@@ -1,16 +1,13 @@
 package ru.practicum.shareit.booking.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.shareit.booking.BookingStatus;
 
 import javax.validation.constraints.Future;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
+@Data
+@Builder
 public class BookingRequestDto {
     private Long id;
     @Future
