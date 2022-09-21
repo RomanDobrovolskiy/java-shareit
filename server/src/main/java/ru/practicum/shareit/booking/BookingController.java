@@ -18,7 +18,7 @@ public class BookingController {
 
     @PostMapping
     public OutputBookingDto bookItem(@RequestHeader(USER_ID_HEADER) Long userId,
-                                       @RequestBody InputBookingDto inputBookingDto) {
+                                     @RequestBody InputBookingDto inputBookingDto) {
         Booking booking = BookingMapper.fromInputDto(inputBookingDto);
         Long itemId = inputBookingDto.getItemId();
         return BookingMapper.toOutputDto(bookingService.createBooking(booking, userId, itemId));
@@ -26,14 +26,14 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public OutputBookingDto approveBooking(@RequestHeader(USER_ID_HEADER) Long userId,
-                                    @PathVariable Long bookingId,
-                                    @RequestParam Boolean approved) {
+                                           @PathVariable Long bookingId,
+                                           @RequestParam Boolean approved) {
         return BookingMapper.toOutputDto(bookingService.approveBooking(userId, bookingId, approved));
     }
 
     @GetMapping("/{bookingId}")
     public OutputBookingDto getBookingById(@RequestHeader(USER_ID_HEADER) Long userId,
-                              @PathVariable Long bookingId) {
+                                           @PathVariable Long bookingId) {
         return BookingMapper.toOutputDto(bookingService.getBookingById(userId, bookingId));
     }
 
