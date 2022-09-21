@@ -54,7 +54,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> getRejectedUsersItemsBookings(Long userId, BookingStatus status, Pageable page);
 
 
-//    Для сортировки и фильтрации на стороне БД
+    //    Для сортировки и фильтрации на стороне БД
     @Query(value = "SELECT * FROM bookings b INNER JOIN items i on i.id = b.item_id "
             + "WHERE b.item_id = ?1 AND b.end_time < ?2 ORDER BY b.end_time ASC LIMIT 1",
             nativeQuery = true)
