@@ -35,8 +35,8 @@ public class ItemController {
 
     @GetMapping
     public Object getAllUserItems(@RequestHeader(USER_ID_HEADER) Long userId,
-            @PositiveOrZero @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-            @Positive @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+            @PositiveOrZero @RequestParam(required = false, defaultValue = "0") Integer from,
+            @Positive @RequestParam(required = false, defaultValue = "10") Integer size) {
         return itemClient.getAllUserItems(userId, from, size);
     }
 
@@ -49,8 +49,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public Object searchAvailableItemsByKeyword(@RequestParam(defaultValue = "") String text,
-            @PositiveOrZero @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-            @Positive @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+            @PositiveOrZero @RequestParam(required = false, defaultValue = "0") Integer from,
+            @Positive @RequestParam(required = false, defaultValue = "10") Integer size) {
         return itemClient.searchAvailableItemsByKeyword(text, from, size);
     }
 
