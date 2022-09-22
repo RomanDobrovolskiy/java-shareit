@@ -54,10 +54,10 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException(String.format("Booking with id %d not found", bookingId)));
         if (!Objects.equals(userId, booking.getItem().getOwner().getId())) {
-            throw new RuntimeException();
+            throw new RuntimeException("Only owner of the item can approve booking");
         }
         if (booking.getStatus() == BookingStatus.APPROVED) {
-            throw new ValidationException();
+            throw new ValidationException("You can change status only for waiting bookings");
         }
         if (isApproved) {
             booking.setStatus(BookingStatus.APPROVED);

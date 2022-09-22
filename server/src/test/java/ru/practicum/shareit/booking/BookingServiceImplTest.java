@@ -14,6 +14,7 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import javax.validation.ValidationException;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -89,7 +90,7 @@ class BookingServiceImplTest {
     public void approveBooking_shouldThrowExceptionWhenNotOwnerTryToApproveItem() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
-        Exception e = Assertions.assertThrows(UserIsNotOwnerException.class, () -> bookingService.approveBooking(2L,
+        Exception e = Assertions.assertThrows(RuntimeException.class, () -> bookingService.approveBooking(2L,
                 1L, true));
         assertThat(e.getMessage(), equalTo("Only owner of the item can approve booking"));
     }
@@ -98,7 +99,7 @@ class BookingServiceImplTest {
     public void approveBooking_shouldThrowExceptionWhenOwnerTryToApproveBookingWithNowWaitingStatus() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
-        Exception e = Assertions.assertThrows(ItemIsBookedException.class, () -> bookingService.approveBooking(1L,
+        Exception e = Assertions.assertThrows(ValidationException.class, () -> bookingService.approveBooking(1L,
                 1L, true));
         assertThat(e.getMessage(), equalTo("You can change status only for waiting bookings"));
     }
