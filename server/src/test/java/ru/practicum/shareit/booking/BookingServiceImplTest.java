@@ -6,8 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.shareit.exception.ItemIsBookedException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ItemIsBookedException;
 import ru.practicum.shareit.exception.UserIsNotOwnerException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
@@ -43,7 +43,7 @@ class BookingServiceImplTest {
 
         Exception e = Assertions.assertThrows(NotFoundException.class, () -> bookingService.createBooking(booking,
                 1L, 1L));
-        assertThat(e.getMessage(), equalTo("User with id 1 not found"));
+        assertThat(e.getMessage(), equalTo("Item with id 1 not found"));
     }
 
     @Test
