@@ -13,6 +13,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking createBooking(@Valid Booking booking, Long userId, Long itemId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
+                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", userId)));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
         if (!item.getAvailable()) {
@@ -36,12 +37,12 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Owner can't book his item");
         }
         if (booking.getStart().isBefore(LocalDateTime.now())
-                || booking.getEnd().isBefore(LocalDateTime.now()) ||
-                booking.getEnd().isBefore(booking.getStart())) {
-            booking.setBooker(user);
-            booking.setItem(item);
-            booking.setStatus(BookingStatus.WAITING);
+                || booking.getEnd().isBefore(booking.getStart())) {
+            throw new ValidationException();
         }
+        booking.setBooker(user);
+        booking.setItem(item);
+        booking.setStatus(BookingStatus.WAITING);
         return bookingRepository.save(booking);
     }
 
