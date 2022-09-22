@@ -12,8 +12,11 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +26,13 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
-    public Booking createBooking(Booking booking, Long userId, Long itemId) {
+    public Booking createBooking(@Valid Booking booking, Long userId, Long itemId) {
+        if (booking.getStart().isBefore(LocalDateTime.now())
+                || booking.getEnd().isBefore(LocalDateTime.now()) || booking.getEnd().isBefore(booking.getStart()))
+            throw new ValidationException();
+        if (Objects.equals(userId, booking.getItem().getOwner().getId())) {
+            throw new ItemIsBookedException("User is not owner");
+        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
         Item item = itemRepository.findById(itemId)

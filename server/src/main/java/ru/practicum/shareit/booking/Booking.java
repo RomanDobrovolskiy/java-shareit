@@ -10,19 +10,21 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @RequiredArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @Entity
 @Table (name = "bookings")
 public class Booking {
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "start_time" )
     private LocalDateTime start;
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private LocalDateTime end;
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id")
     private Item item;
     @ManyToOne
     @JoinColumn(name = "booker_id")

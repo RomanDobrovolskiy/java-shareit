@@ -70,10 +70,9 @@ public class BookingController {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Map<String, String>> errorHandler(IllegalArgumentException e) {
         Map<String, String> resp = new HashMap<>();
-        resp.put("error", "Unknown state: UNSUPPORTED_STATUS");
+        resp.put("error", e.getMessage());
         return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
     }
 }
