@@ -78,6 +78,7 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getAllUserBookings(Long userId, BookingState state, Integer from, Integer size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
+        validationPage(from, size);
         LocalDateTime now = LocalDateTime.now();
         Pageable page = PageRequest.of(from / size, size);
         switch (state) {
@@ -97,7 +98,7 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(userId,
                         BookingStatus.REJECTED, page);
             default:
-                throw new javax.validation.ValidationException("Unknown state: UNSUPPORTED_STATUS");
+                return null;
         }
     }
 
@@ -105,6 +106,7 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getAllUserItemsBookings(Long userId, BookingState state, Integer from, Integer size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
+        validationPage(from, size);
         LocalDateTime now = LocalDateTime.now();
         Pageable page = PageRequest.of(from / size, size);
         switch (state) {
@@ -120,8 +122,17 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.getWaitingUsersItemsBookings(userId, now, BookingStatus.WAITING, page);
             case REJECTED:
                 return bookingRepository.getRejectedUsersItemsBookings(userId, BookingStatus.REJECTED, page);
-            default:
-                throw new javax.validation.ValidationException("Unknown state: UNSUPPORTED_STATUS");
+        }
+        return null;
+    }
+
+    public void validationPage(int from, int size) {
+        if (from < 0) {
+            throw new javax.validation.ValidationException("From cannot be less that 0");
+        }
+        if (size <= 0) {
+            throw new javax.validation.ValidationException("Size cannot be less or equals 0");
         }
     }
 }
+
