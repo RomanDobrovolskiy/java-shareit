@@ -35,9 +35,13 @@ public class BookingServiceImpl implements BookingService {
         if (item.getOwner().getId().equals(userId)) {
             throw new NotFoundException("Owner can't book his item");
         }
-        booking.setBooker(user);
-        booking.setItem(item);
-        booking.setStatus(BookingStatus.WAITING);
+        if (booking.getStart().isBefore(LocalDateTime.now())
+                || booking.getEnd().isBefore(LocalDateTime.now()) ||
+                booking.getEnd().isBefore(booking.getStart())) {
+            booking.setBooker(user);
+            booking.setItem(item);
+            booking.setStatus(BookingStatus.WAITING);
+        }
         return bookingRepository.save(booking);
     }
 
