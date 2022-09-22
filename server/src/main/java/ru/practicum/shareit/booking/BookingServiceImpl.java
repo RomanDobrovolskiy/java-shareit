@@ -13,7 +13,6 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 
