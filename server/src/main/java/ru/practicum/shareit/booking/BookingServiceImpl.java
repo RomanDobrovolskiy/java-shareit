@@ -16,7 +16,6 @@ import javax.validation.Valid;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -40,10 +39,6 @@ public class BookingServiceImpl implements BookingService {
         booking.setBooker(user);
         booking.setItem(item);
         booking.setStatus(BookingStatus.WAITING);
-        if (booking.getStart().isBefore(LocalDateTime.now())
-                || booking.getEnd().isBefore(LocalDateTime.now()) ||
-                booking.getEnd().isBefore(booking.getStart()))
-            throw new ValidationException();
         return bookingRepository.save(booking);
     }
 
