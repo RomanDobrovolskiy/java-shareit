@@ -13,32 +13,32 @@ import java.util.Map;
 public class ErrorHandler {
 
     @ExceptionHandler
-    public ResponseEntity<?> handleNotFound(final ru.practicum.shareit.exceptions.NotFoundException e) {
+    public ResponseEntity<?> handleNotFound(final NotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleItemOwnerIsNotSet(final ru.practicum.shareit.exceptions.ItemOwnerIsNotSetException e) {
+    public ResponseEntity<?> handleItemOwnerIsNotSet(final ItemOwnerIsNotSetException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleUserIsNotOwner(final ru.practicum.shareit.exceptions.UserIsNotOwnerException e) {
+    public ResponseEntity<?> handleUserIsNotOwner(final UserIsNotOwnerException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleDuplicateEmail(final ru.practicum.shareit.exceptions.DuplicateEmailException e) {
+    public ResponseEntity<?> handleDuplicateEmail(final DuplicateEmailException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleItemIsBooked(final ru.practicum.shareit.exceptions.ItemIsBookedException e) {
+    public ResponseEntity<?> handleItemIsBooked(final ItemIsBookedException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleUserHasNotBookedItem(final ru.practicum.shareit.exceptions.UserHasNotBookedItem e) {
+    public ResponseEntity<?> handleUserHasNotBookedItem(final UserHasNotBookedItem e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
@@ -48,7 +48,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleWrongArgument(final ru.practicum.shareit.exceptions.IncorrectStateException e) {
+    public ResponseEntity<?> handleWrongArgument(final IncorrectStateException e) {
         Map<String,String> resp = new HashMap<>();
         resp.put("error", e.getMessage());
         return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);

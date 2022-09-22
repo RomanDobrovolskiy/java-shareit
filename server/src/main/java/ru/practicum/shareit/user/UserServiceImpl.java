@@ -2,7 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.List;
 
