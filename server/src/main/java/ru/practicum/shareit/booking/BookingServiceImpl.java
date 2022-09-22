@@ -28,11 +28,9 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking createBooking(@Valid Booking booking, Long userId, Long itemId) {
         if (booking.getStart().isBefore(LocalDateTime.now())
-                || booking.getEnd().isBefore(LocalDateTime.now()) || booking.getEnd().isBefore(booking.getStart()))
+                || booking.getEnd().isBefore(LocalDateTime.now()) ||
+                booking.getEnd().isBefore(booking.getStart()))
             throw new ValidationException();
-        if (Objects.equals(userId, booking.getItem().getOwner().getId())) {
-            throw new ItemIsBookedException("User is not owner");
-        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
         Item item = itemRepository.findById(itemId)
