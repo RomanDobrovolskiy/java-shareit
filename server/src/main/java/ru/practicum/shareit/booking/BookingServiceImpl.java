@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.IncorrectStateException;
 import ru.practicum.shareit.exception.ItemIsBookedException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.UserIsNotOwnerException;
@@ -40,9 +41,8 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getStart().isBefore(LocalDateTime.now())
                 || booking.getEnd().isBefore(LocalDateTime.now())
                 || booking.getEnd().isBefore(booking.getStart())) {
-            throw new ValidationException();
+            throw new NullPointerException();
         }
-
         booking.setBooker(user);
         booking.setItem(item);
         booking.setStatus(BookingStatus.WAITING);
@@ -54,10 +54,10 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException(String.format("Booking with id %d not found", bookingId)));
         if (!Objects.equals(userId, booking.getItem().getOwner().getId())) {
-            throw new RuntimeException("Only owner of the item can approve booking");
+            throw new UserIsNotOwnerException("Only owner of the item can approve booking");
         }
         if (booking.getStatus() == BookingStatus.APPROVED) {
-            throw new ValidationException("You can change status only for waiting bookings");
+            throw new IncorrectStateException("You can change status only for waiting bookings");
         }
         if (isApproved) {
             booking.setStatus(BookingStatus.APPROVED);

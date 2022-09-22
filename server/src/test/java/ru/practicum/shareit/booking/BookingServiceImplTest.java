@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.exception.IncorrectStateException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ItemIsBookedException;
 import ru.practicum.shareit.exception.UserIsNotOwnerException;
@@ -99,7 +100,7 @@ class BookingServiceImplTest {
     public void approveBooking_shouldThrowExceptionWhenOwnerTryToApproveBookingWithNowWaitingStatus() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
-        Exception e = Assertions.assertThrows(ValidationException.class, () -> bookingService.approveBooking(1L,
+        Exception e = Assertions.assertThrows(IncorrectStateException.class, () -> bookingService.approveBooking(1L,
                 1L, true));
         assertThat(e.getMessage(), equalTo("You can change status only for waiting bookings"));
     }
