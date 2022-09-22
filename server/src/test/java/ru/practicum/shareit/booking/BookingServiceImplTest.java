@@ -15,7 +15,6 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
-import javax.validation.ValidationException;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
