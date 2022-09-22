@@ -4,17 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.IncorrectStateException;
-import ru.practicum.shareit.exception.ItemIsBookedException;
-import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.UserIsNotOwnerException;
+import ru.practicum.shareit.exception.*;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -101,7 +97,7 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(userId,
                         BookingStatus.REJECTED, page);
             default:
-                return null;
+                throw new javax.validation.ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
 
@@ -125,7 +121,7 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 return bookingRepository.getRejectedUsersItemsBookings(userId, BookingStatus.REJECTED, page);
             default:
-                return null;
+                throw new javax.validation.ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
 }
