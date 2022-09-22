@@ -14,6 +14,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +41,7 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getStart().isBefore(LocalDateTime.now())
                 || booking.getEnd().isBefore(LocalDateTime.now())
                 || booking.getEnd().isBefore(booking.getStart())) {
-            throw new NullPointerException();
+            throw new ValidationException();
         }
         booking.setBooker(user);
         booking.setItem(item);
@@ -100,7 +101,7 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(userId,
                         BookingStatus.REJECTED, page);
             default:
-                throw new IllegalArgumentException("Unknown state");
+                return null;
         }
     }
 
@@ -124,7 +125,7 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 return bookingRepository.getRejectedUsersItemsBookings(userId, BookingStatus.REJECTED, page);
             default:
-                throw new IllegalArgumentException("Unknown state");
+                return null;
         }
     }
 }
