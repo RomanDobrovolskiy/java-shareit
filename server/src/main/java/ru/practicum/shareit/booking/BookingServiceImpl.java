@@ -27,10 +27,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking createBooking(@Valid Booking booking, Long userId, Long itemId) {
-        if (booking.getStart().isBefore(LocalDateTime.now())
-                || booking.getEnd().isBefore(LocalDateTime.now()) ||
-                booking.getEnd().isBefore(booking.getStart()))
-            throw new ValidationException();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
         Item item = itemRepository.findById(itemId)
@@ -44,6 +40,10 @@ public class BookingServiceImpl implements BookingService {
         booking.setBooker(user);
         booking.setItem(item);
         booking.setStatus(BookingStatus.WAITING);
+        if (booking.getStart().isBefore(LocalDateTime.now())
+                || booking.getEnd().isBefore(LocalDateTime.now()) ||
+                booking.getEnd().isBefore(booking.getStart()))
+            throw new ValidationException();
         return bookingRepository.save(booking);
     }
 
