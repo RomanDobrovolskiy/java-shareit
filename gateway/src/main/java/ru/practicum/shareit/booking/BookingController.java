@@ -18,6 +18,7 @@ import java.util.Map;
 
 import static ru.practicum.shareit.Constants.USER_ID_HEADER;
 
+
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
@@ -28,30 +29,30 @@ public class BookingController {
 
     @PostMapping
     public Object bookItem(@RequestHeader(USER_ID_HEADER) long userId,
-                                           @RequestBody @Valid InputBookingDto inputBookingDto) {
+                           @RequestBody @Valid InputBookingDto inputBookingDto) {
         log.info("Creating booking {}, userId={}", inputBookingDto, userId);
         return bookingClient.bookItem(userId, inputBookingDto);
     }
 
     @PatchMapping("/{bookingId}")
     public Object approveBooking(@RequestHeader(USER_ID_HEADER) Long userId,
-                                                 @PathVariable Long bookingId,
-                                                 @RequestParam Boolean approved) {
+                                 @PathVariable Long bookingId,
+                                 @RequestParam Boolean approved) {
         return bookingClient.approveBooking(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public Object getBookingById(@RequestHeader(USER_ID_HEADER) long userId,
-                                             @PathVariable Long bookingId) {
+                                 @PathVariable Long bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
     }
 
     @GetMapping
     public Object getAllUserBookings(@RequestHeader(USER_ID_HEADER) long userId,
-            @RequestParam(defaultValue = "all") String stateParam,
-            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-            @Positive @RequestParam(defaultValue = "10") Integer size) {
+                                     @RequestParam(name = "state", defaultValue = "all") String stateParam,
+                                     @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                     @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IncorrectStateException("Unknown state: " + stateParam));
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
@@ -60,9 +61,9 @@ public class BookingController {
 
     @GetMapping("/owner")
     public Object getAllUserItemsBookings(@RequestHeader(USER_ID_HEADER) long userId,
-            @RequestParam(defaultValue = "all") String stateParam,
-            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-            @Positive @RequestParam(defaultValue = "10") Integer size) {
+                                          @RequestParam(name = "state", defaultValue = "all") String stateParam,
+                                          @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                          @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IncorrectStateException("Unknown state: " + stateParam));
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
@@ -70,9 +71,10 @@ public class BookingController {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Map<String, String>> errorHandler(IllegalArgumentException e) {
         Map<String, String> resp = new HashMap<>();
-        resp.put("error", e.getMessage());
+        resp.put("error", String.format("Unknown state: UNSUPPORTED_STATUS"));
         return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
     }
 }

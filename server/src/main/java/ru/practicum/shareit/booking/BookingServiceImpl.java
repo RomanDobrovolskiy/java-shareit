@@ -98,7 +98,7 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(userId,
                         BookingStatus.REJECTED, page);
             default:
-                return null;
+                throw new IllegalArgumentException("Unknown state");
         }
     }
 
@@ -122,8 +122,9 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.getWaitingUsersItemsBookings(userId, now, BookingStatus.WAITING, page);
             case REJECTED:
                 return bookingRepository.getRejectedUsersItemsBookings(userId, BookingStatus.REJECTED, page);
+            default:
+                throw new IllegalArgumentException("Unknown state");
         }
-        return null;
     }
 
     public void validationPage(int from, int size) {
