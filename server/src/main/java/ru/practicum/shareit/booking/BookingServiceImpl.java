@@ -13,8 +13,10 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +40,7 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getStart().isBefore(LocalDateTime.now())
                 || booking.getEnd().isBefore(LocalDateTime.now())
                 || booking.getEnd().isBefore(booking.getStart())) {
-            throw new RuntimeException();
+            throw new ValidationException();
         }
 
         booking.setBooker(user);
@@ -51,13 +53,17 @@ public class BookingServiceImpl implements BookingService {
     public Booking approveBooking(Long userId, Long bookingId, Boolean isApproved) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException(String.format("Booking with id %d not found", bookingId)));
-        if (!booking.getItem().getOwner().getId().equals(userId)) {
-            throw new UserIsNotOwnerException("Only owner of the item can approve booking");
+        if (!Objects.equals(userId, booking.getItem().getOwner().getId())) {
+            throw new RuntimeException();
         }
-        if (!booking.getStatus().equals(BookingStatus.WAITING)) {
-            throw new ItemIsBookedException("You can change status only for waiting bookings");
+        if (booking.getStatus() == BookingStatus.APPROVED) {
+            throw new ValidationException();
         }
-        booking.setStatus(isApproved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
+        if (isApproved) {
+            booking.setStatus(BookingStatus.APPROVED);
+        } else {
+            booking.setStatus(BookingStatus.REJECTED);
+        }
         return bookingRepository.save(booking);
     }
 
